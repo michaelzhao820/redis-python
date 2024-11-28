@@ -4,9 +4,10 @@ import socket  # noqa: F401
 def main():
 
     server_socket = socket.create_server(("localhost", 6379), reuse_port=True)
-    while True:
-        connection, _ = server_socket.accept()
-        connection.sendall(b"+PONG\r\n")
+    connection, _ = server_socket.accept()
+    with connection:
+        while True:
+            connection.sendall(b"+PONG\r\n")
 
 if __name__ == "__main__":
     main()

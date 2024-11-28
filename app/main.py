@@ -1,7 +1,5 @@
 import socket  # noqa: F401
 
-from docutils.nodes import address
-
 
 def main():
     # You can use print statements as follows for debugging, they'll be visible when running tests.

@@ -18,20 +18,27 @@ def parse_redis_protocol(data):
     for _ in range(num_arguments):
         args.append(parts[i].decode('utf-8'))
         i += 2
-    print(args[0], args[1:])
     return args[0], args[1:]
 
 
-
+def parse_command_and_args(command, args):
+    match command:
+        case 'ECHO':
+            return f"+{args[0]}\r\n".encode('utf-8')
+        case 'PING':
+            return b"+PONG\r\n"
+        case _:
+            return b"-ERROR Unknown command\r\n"
 
 
 def handle_connection(connection):
     with connection:
         data = connection.recv(8000)
         while data:
-            parse_redis_protocol(data)
-
-
+            command, args = parse_redis_protocol(data)
+            response = parse_command_and_args(command,args)
+            connection.sendall(response)
+            data = connection.recv(8000)
 
 if __name__ == "__main__":
     main()

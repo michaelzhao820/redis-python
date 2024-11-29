@@ -36,6 +36,7 @@ def parse_command_and_args(command, args):
             return b'+OK\r\n'
         case 'GET':
             if args[0] not in GLOBAL_KEY_VALUE_STORE:
+                print("hello")
                 return b"$-1\r\n"
             value = GLOBAL_KEY_VALUE_STORE[args[0]]
             return f"${len(value)}\r\n{value}\r\n".encode('utf-8')

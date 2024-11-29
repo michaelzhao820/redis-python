@@ -53,6 +53,7 @@ def handle_connection(connection, ):
     with connection:
         data = connection.recv(8000)
         while data:
+            print(data)
             command, args = parse_redis_protocol(data)
             response = parse_command_and_args(command,args)
             connection.sendall(response)

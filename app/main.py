@@ -60,7 +60,7 @@ def parse_command_and_args(command, args):
             if args[0] in GLOBAL_KEY_VALUE_STORE:
                 param_name = args[0]
                 return (f"*2\r\n${len(param_name)}\r\n{param_name}\r\n${len(GLOBAL_KEY_VALUE_STORE[param_name])}"
-                        f"\r\n{GLOBAL_KEY_VALUE_STORE[param_name]}\r\n")
+                        f"\r\n{GLOBAL_KEY_VALUE_STORE[param_name]}\r\n").encode('utf-8')
             return "*0\r\n"
         case _:
             return b"-ERROR Unknown command\r\n"

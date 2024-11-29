@@ -4,13 +4,10 @@ from argparse import ArgumentParser
 from time import time
 
 GLOBAL_KEY_VALUE_STORE = {}
-DIRECTORY = None
-db_file_name = None
-
 
 def main():
     args = parse_command_line_args()
-    DIRECTORY, DB_FILE_NAME = args.dir, args.dbfilename
+    GLOBAL_KEY_VALUE_STORE['dir'], GLOBAL_KEY_VALUE_STORE['dbfilename'] = args.dir, args.dbfilename
     server_socket = socket.create_server(("localhost", 6379), reuse_port=True)
     while True:
         connection, _ = server_socket.accept()
@@ -60,7 +57,11 @@ def parse_command_and_args(command, args):
                 return b"$-1\r\n"
             return f"${len(value)}\r\n{value}\r\n".encode('utf-8')
         case 'CONFIG GET':
-            print("Hello world!")
+            if args[0] in GLOBAL_KEY_VALUE_STORE:
+                param_name = args[0]
+                return (f"*2\r\n${len(param_name)}\r\n{param_name}\r\n${len(GLOBAL_KEY_VALUE_STORE[param_name])}"
+                        f"\r\n{GLOBAL_KEY_VALUE_STORE[param_name]}\r\n")
+            return "*0\r\n"
         case _:
             return b"-ERROR Unknown command\r\n"
 

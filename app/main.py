@@ -24,6 +24,7 @@ def parse_command_line_args():
 def parse_redis_protocol(data):
     parts = data.split(b'\r\n')
     num_arguments = int(parts[0][1:])
+    print(parts)
     args = [parts[i].decode('utf-8') for i in range(2,2 + num_arguments * 2, 2)]
     if len(args) > 1 and args[0] in {'CONFIG'}:
         command = f"{args[0]} {args[1]}"
@@ -31,7 +32,6 @@ def parse_redis_protocol(data):
     else:
         command = args[0]
         arguments = args[1:]
-    print(command, arguments)
     return command, arguments
 
 

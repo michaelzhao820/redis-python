@@ -16,8 +16,8 @@ def main():
 
 def parse_command_line_args():
     parser = ArgumentParser()
-    parser.add_argument("--dir", required=True, help="Path to RDB directory")
-    parser.add_argument("--dbfilename", required = True, help= "Name of RDB file")
+    parser.add_argument("--dir", help="Path to RDB directory")
+    parser.add_argument("--dbfilename", help= "Name of RDB file")
     return parser.parse_args()
 
 

@@ -1,15 +1,25 @@
 import socket
 import threading
+from argparse import ArgumentParser
 from time import time
 
 GLOBAL_KEY_VALUE_STORE = {}
 
+
 def main():
+    command_line_args = parse_command_line_args()
+    print(command_line_args)
     server_socket = socket.create_server(("localhost", 6379), reuse_port=True)
     while True:
         connection, _ = server_socket.accept()
         client_thread = threading.Thread(target=handle_connection, args= (connection,))
         client_thread.start()
+
+def parse_command_line_args():
+    parser = ArgumentParser()
+    parser.add_argument("--dir", required=True, help="Path to RDB directory")
+    parser.add_argument("--dbfilename", required = True, help= "Name of RDB file")
+    return parser.parse_args()
 
 
 def parse_redis_protocol(data):

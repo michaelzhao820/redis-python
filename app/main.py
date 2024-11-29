@@ -1,6 +1,7 @@
 import socket
 import threading
 
+GLOBAL_KEY_VALUE_STORE = {}
 
 def main():
     server_socket = socket.create_server(("localhost", 6379), reuse_port=True)
@@ -27,11 +28,19 @@ def parse_command_and_args(command, args):
             return f"+{args[0]}\r\n".encode('utf-8')
         case 'PING':
             return b"+PONG\r\n"
+        case 'SET':
+            GLOBAL_KEY_VALUE_STORE[args[0]] = args[1]
+            return b'+OK\r\n'
+        case 'GET':
+            if args[0] not in GLOBAL_KEY_VALUE_STORE:
+                return b"$-1\r\n"
+            value = GLOBAL_KEY_VALUE_STORE[args[0]]
+            return f"${len(value)}\r\n{value}\r\n".encode('utf-8')
         case _:
             return b"-ERROR Unknown command\r\n"
 
 
-def handle_connection(connection):
+def handle_connection(connection, ):
     with connection:
         data = connection.recv(8000)
         while data:

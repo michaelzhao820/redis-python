@@ -1,5 +1,6 @@
 import socket
 import threading
+from time import sleep
 
 GLOBAL_KEY_VALUE_STORE = {}
 
@@ -29,6 +30,8 @@ def parse_command_and_args(command, args):
         case 'PING':
             return b"+PONG\r\n"
         case 'SET':
+            if len(args) > 3 and args[2].upper() == 'PX':
+                sleep(int(args[3]) / 1000.0)
             GLOBAL_KEY_VALUE_STORE[args[0]] = args[1]
             return b'+OK\r\n'
         case 'GET':

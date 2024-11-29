@@ -31,16 +31,18 @@ def parse_command_and_args(command, args):
             return b"+PONG\r\n"
         case 'SET':
             add_time = None
-            if len(args) > 3 and args[2].upper() == 'PX':
-                add_time = time() + int(args[3]) / 1000
-            GLOBAL_KEY_VALUE_STORE[args[0]] = (args[1], add_time)
+            key, value, PX = args[0], args[1], args[2]
+            if len(args) > 3 and PX.upper() == 'PX':
+                add_time = time() + int(PX) / 1000
+            GLOBAL_KEY_VALUE_STORE[key] = (value, add_time)
             return b'+OK\r\n'
         case 'GET':
-            if args[0] not in GLOBAL_KEY_VALUE_STORE:
+            key = args[0]
+            if key not in GLOBAL_KEY_VALUE_STORE:
                 return b"$-1\r\n"
-            value, expiration_time = GLOBAL_KEY_VALUE_STORE[args[0]]
+            value, expiration_time = GLOBAL_KEY_VALUE_STORE[key]
             if expiration_time and expiration_time < time():
-                del GLOBAL_KEY_VALUE_STORE[args[0]]
+                del GLOBAL_KEY_VALUE_STORE[key]
                 return b"$-1\r\n"
             return f"${len(value)}\r\n{value}\r\n".encode('utf-8')
         case _:

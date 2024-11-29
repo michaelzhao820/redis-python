@@ -45,7 +45,9 @@ def parse_command_and_args(command, args):
             key, value, PX, px_value = args[0], args[1], args[2], args[3]
             if len(args) > 3 and PX.upper() == 'PX':
                 add_time = time() + int(px_value) / 1000
-            GLOBAL_KEY_VALUE_STORE[key] = (value, add_time)
+                GLOBAL_KEY_VALUE_STORE[key] = (value, add_time)
+            else:
+                GLOBAL_KEY_VALUE_STORE[key] = (value,add_time)
             return b'+OK\r\n'
         case 'GET':
             key = args[0]

@@ -43,7 +43,7 @@ def parse_command_and_args(command, args):
                 del GLOBAL_KEY_VALUE_STORE[args[0]]
                 return b"$-1\r\n"
 
-            value = GLOBAL_KEY_VALUE_STORE[args[0]]
+            value = GLOBAL_KEY_VALUE_STORE[args[0][0]]
             return f"${len(value)}\r\n{value}\r\n".encode('utf-8')
         case _:
             return b"-ERROR Unknown command\r\n"

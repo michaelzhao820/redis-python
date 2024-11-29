@@ -42,8 +42,9 @@ def parse_command_and_args(command, args):
             return b"+PONG\r\n"
         case 'SET':
             add_time = None
-            key, value, PX, px_value = args[0], args[1], args[2], args[3]
-            if len(args) > 3 and PX.upper() == 'PX':
+            key, value = args[0], args[1]
+            if len(args) > 3 and args[2].upper() == 'PX':
+                px_value = args[3]
                 add_time = time() + int(px_value) / 1000
                 GLOBAL_KEY_VALUE_STORE[key] = (value, add_time)
             else:

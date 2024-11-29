@@ -7,8 +7,8 @@ GLOBAL_KEY_VALUE_STORE = {}
 
 
 def main():
-    command_line_args = parse_command_line_args()
-    print(command_line_args)
+    directory, db_file_name = parse_command_line_args().dir, parse_command_line_args().dbfilename
+    print(directory, db_file_name)
     server_socket = socket.create_server(("localhost", 6379), reuse_port=True)
     while True:
         connection, _ = server_socket.accept()

@@ -59,6 +59,8 @@ def parse_command_and_args(command, args):
                 del GLOBAL_KEY_VALUE_STORE[key]
                 return b"$-1\r\n"
             return f"${len(value)}\r\n{value}\r\n".encode('utf-8')
+        case 'CONFIG GET':
+            print("Hello world!")
         case _:
             return b"-ERROR Unknown command\r\n"
 
@@ -68,7 +70,6 @@ def handle_connection(connection, ):
         data = connection.recv(8000)
         while data:
             command, args = parse_redis_protocol(data)
-            print(command, args)
             response = parse_command_and_args(command,args)
             connection.sendall(response)
             data = connection.recv(8000)

@@ -59,7 +59,6 @@ def parse_command_and_args(command, args):
                 del GLOBAL_KEY_VALUE_STORE[key]
                 return b"$-1\r\n"
             return f"${len(value)}\r\n{value}\r\n".encode('utf-8')
-        case
         case _:
             return b"-ERROR Unknown command\r\n"
 

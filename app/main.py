@@ -12,7 +12,17 @@ def main():
 
 def parse_redis_protocol(data):
     parts = data.split(b'\r\n')
-    print(parts)
+    num_arguments = int(parts[0][1:])
+    i = 2
+    args = []
+    for _ in range(num_arguments):
+        args.append(parts[i].decode('utf-8'))
+        i += 2
+    print(args[0], args[1:])
+    return args[0], args[1:]
+
+
+
 
 
 def handle_connection(connection):

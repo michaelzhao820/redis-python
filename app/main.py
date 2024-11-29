@@ -27,17 +27,17 @@ def parse_command_line_args():
 def parse_redis_protocol(data):
     parts = data.split(b'\r\n')
     num_arguments = int(parts[0][1:])
-    i = 2
-    args = []
-    for _ in range(num_arguments):
-        args.append(parts[i].decode('utf-8'))
-        i += 2
-    return args[0], args[1:]
+    args = [parts[i].decode('utf-8') for i in range(2,2 + num_arguments * 2, 2)]
+    if len(args) > 1 and args[0] in {'CONFIG'}:
+        command = f"{args[0]} {args[1]}"
+        arguments = args[2:]
+    else:
+        command = args[0]
+        arguments = args[1:]
+    return command, arguments
 
 
 def parse_command_and_args(command, args):
-    print(command)
-    print(args)
     match command:
         case 'ECHO':
             return f"+{args[0]}\r\n".encode('utf-8')
@@ -67,8 +67,8 @@ def handle_connection(connection, ):
     with connection:
         data = connection.recv(8000)
         while data:
-            print(data)
             command, args = parse_redis_protocol(data)
+            print(command, args)
             response = parse_command_and_args(command,args)
             connection.sendall(response)
             data = connection.recv(8000)

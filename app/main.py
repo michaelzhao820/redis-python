@@ -1,6 +1,6 @@
 import socket
 import threading
-from time import sleep
+from time import time
 
 GLOBAL_KEY_VALUE_STORE = {}
 
@@ -30,15 +30,19 @@ def parse_command_and_args(command, args):
         case 'PING':
             return b"+PONG\r\n"
         case 'SET':
+            add_time = None
             if len(args) > 3 and args[2].upper() == 'PX':
-                sleep(int(args[3]) / 1000.0)
-            GLOBAL_KEY_VALUE_STORE[args[0]] = args[1]
+                add_time = time() + int(args[3]) / 1000
+            GLOBAL_KEY_VALUE_STORE[args[0]] = (args[1], add_time)
             return b'+OK\r\n'
         case 'GET':
             if args[0] not in GLOBAL_KEY_VALUE_STORE:
                 return b"$-1\r\n"
-            print(args[0])
-            print(GLOBAL_KEY_VALUE_STORE)
+            value, expiration_time = GLOBAL_KEY_VALUE_STORE[args[0]]
+            if expiration_time and expiration_time < time():
+                del GLOBAL_KEY_VALUE_STORE[args[0]]
+                return b"$-1\r\n"
+
             value = GLOBAL_KEY_VALUE_STORE[args[0]]
             return f"${len(value)}\r\n{value}\r\n".encode('utf-8')
         case _:

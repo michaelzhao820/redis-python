@@ -31,6 +31,7 @@ def parse_redis_protocol(data):
     else:
         command = args[0]
         arguments = args[1:]
+    print(command, arguments)
     return command, arguments
 
 

@@ -24,7 +24,6 @@ def parse_command_line_args():
 def parse_redis_protocol(data):
     parts = data.split(b'\r\n')
     num_arguments = int(parts[0][1:])
-    print(parts)
     args = [parts[i].decode('utf-8') for i in range(2,2 + num_arguments * 2, 2)]
     if len(args) > 1 and args[0] in {'CONFIG'}:
         command = f"{args[0]} {args[1]}"
@@ -43,9 +42,9 @@ def parse_command_and_args(command, args):
             return b"+PONG\r\n"
         case 'SET':
             add_time = None
-            key, value, PX = args[0], args[1], args[2]
+            key, value, PX, px_value = args[0], args[1], args[2], args[3]
             if len(args) > 3 and PX.upper() == 'PX':
-                add_time = time() + int(PX) / 1000
+                add_time = time() + int(px_value) / 1000
             GLOBAL_KEY_VALUE_STORE[key] = (value, add_time)
             return b'+OK\r\n'
         case 'GET':

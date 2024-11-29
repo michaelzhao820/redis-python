@@ -4,11 +4,13 @@ from argparse import ArgumentParser
 from time import time
 
 GLOBAL_KEY_VALUE_STORE = {}
+DIRECTORY = None
+db_file_name = None
 
 
 def main():
-    directory, db_file_name = parse_command_line_args().dir, parse_command_line_args().dbfilename
-    print(directory, db_file_name)
+    args = parse_command_line_args()
+    DIRECTORY, DB_FILE_NAME = args.dir, args.dbfilename
     server_socket = socket.create_server(("localhost", 6379), reuse_port=True)
     while True:
         connection, _ = server_socket.accept()
@@ -34,6 +36,8 @@ def parse_redis_protocol(data):
 
 
 def parse_command_and_args(command, args):
+    print(command)
+    print(args)
     match command:
         case 'ECHO':
             return f"+{args[0]}\r\n".encode('utf-8')
@@ -55,6 +59,7 @@ def parse_command_and_args(command, args):
                 del GLOBAL_KEY_VALUE_STORE[key]
                 return b"$-1\r\n"
             return f"${len(value)}\r\n{value}\r\n".encode('utf-8')
+        case
         case _:
             return b"-ERROR Unknown command\r\n"
 
